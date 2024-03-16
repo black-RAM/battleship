@@ -3,9 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BattleShip</title>
+    <title>Battleship</title>
   </head>
   <body>
+    <main class="grid grid-cols-2 min-h-dvh gap-6 p-6">
+      <article>
+        <header class="bg-red-500 board-title">
+          <h2>Your Fleet</h2>
+        </header>
+        <section id="player-board"></section>
+        <section class="yard"></section>
+      </article>
+
+      <article>
+        <header class="bg-slate-500 board-title">
+          <h2>Opponent</h2>
+        </header>
+        <section id="opponet-board"></section>
+        <section class="yard"></section>
+      </article>
+    </main>
     <script src="main.js"></script>
   </body>
 </html>
