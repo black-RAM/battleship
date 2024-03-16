@@ -1,12 +1,8 @@
-// import other test suites
-import "./model.tests"
-
 // import modules to test
 import { Player, Computer } from "../src/model"
-import GameController from "../src"
+import GameController from "../src/control"
 
-// fail-safe, easy manual implementations of mocks
-// jest.mock("../src/view") was being ignored in bundled dist/test.js
+// mocks reflect what view.ts module functions do
 const getInitialParameters = jest.fn(async() => ({userName: "Human", humanStarts: true}))
 const getUserCoordinates = jest.fn(async() => Array.from({length: 2}, () => Math.floor(Math.random() * 10)))
 const updateBoards = jest.fn()

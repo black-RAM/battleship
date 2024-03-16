@@ -1,35 +1,41 @@
-import { GameBoard, ShipDatum } from "./model"
-import { Table } from "console-table-printer"
+import { GameBoard } from "./model"
 
-async function getInitialParameters(): Promise<object> {
-  return {}
+async function getInitialParameters() {
+  const name = "Bob"
+  const wantsToStart = true
+  return { userName: name, humanStarts: wantsToStart }
 }
 
 async function getUserCoordinates(): Promise<number[]> {
   return []
 }
 
-function updateBoards(humanBoard: GameBoard, computerBoard: GameBoard) {
-    // console.clear()
-    // const parse = (cells: (boolean | ShipDatum)[]) => {
-    //   return cells.map(cell => cell == false ? 0 : cell == true ? 1 : !cell.wasHit ? 2 : 3)
-    // }
-    
-    // const humanTable = new Table()
-    // for (const row of humanBoard.board) {
-    //   humanTable.addRow(parse(row))
-    // }
+function updateBoards(human: GameBoard, computer: GameBoard) {
+  let board = document.getElementById("player-board")
+  let table = document.querySelector<HTMLTableElement>("player-table") || document.createElement("table")
+  table.id = "player-table"
+  table.innerHTML = ""
 
-    // console.log("Human board: ")
-    // humanTable.printTable()
+  for (const row of human.board) {
+    const tableRow = document.createElement("tr")
+    for (const cell of row) {
+      const tableCell = document.createElement("td")
+      tableCell.classList.add("board-cell")
 
-    // const computerTable = new Table()
-    // for (const row of computerBoard.board) {
-    //   computerTable.addRow(parse(row))
-    // }
+      if(typeof cell == "boolean") {
+        tableCell.classList.add("bg-blue-200")
+      } else {
+        tableCell.classList.add("bg-blue-400")
+      }
 
-    // console.log("Computer board: ")
-    // computerTable.printTable()
+      tableRow.appendChild(tableCell) 
+    }
+    table.appendChild(tableRow)
+  }
+
+  if(board && !board.hasChildNodes()) {
+    board.appendChild(table)
+  }
 }
 
 function announce(message: string) {

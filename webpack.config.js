@@ -1,11 +1,9 @@
 const path = require("path")
+const entryGenerator = require("dtepg")
 
 module.exports = {
   mode: "development",
-  entry: {
-    main: './src/index.ts',
-    test: './tests/index.tests.ts'
-  },
+  entry: Object.assign({main: './src/index.ts'}, entryGenerator("./tests")),
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
