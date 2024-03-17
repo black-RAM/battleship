@@ -28,11 +28,9 @@
     }
 }
 
-#opponent-board {
-  .sea {
-    @apply bg-slate-300;
-    > .hit-dot {
-      @apply bg-slate-400;
-    }
+#opponent-board .sea {
+  @apply bg-slate-300;
+  >.hit-dot {
+    @apply bg-slate-400;
   }
 }

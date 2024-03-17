@@ -6,9 +6,17 @@ async function getInitialParameters() {
   return { userName: name, humanStarts: wantsToStart }
 }
 
-async function getUserCoordinates(): Promise<number[]> {
-  await new Promise(resolve => setTimeout(resolve, 1000)) // wait a second
-  return Array.from({length: 2}, () => Math.floor(Math.random() * 10))
+function getUserCoordinates(): Promise<number[]> {
+  const opponentGrid = document.querySelector<HTMLTableElement>("#opponent-table")
+  if(opponentGrid == null) throw new Error("no opponent grid")
+
+  return new Promise((resolve) => {
+    opponentGrid.addEventListener(("click"), (event) => {
+      const target = event.target as HTMLTableCellElement
+      const coordinates = [target.dataset.row, target.dataset.col].map(coordinate => Number(coordinate))
+      resolve(coordinates)
+    })
+  })
 }
 
 function updateBoards(player: GameBoard, opponent: GameBoard) {
@@ -19,7 +27,6 @@ function updateBoards(player: GameBoard, opponent: GameBoard) {
 
   colHeaders(table1, player.board[0].length)
   createRows(table1, player)
-  editBoard(board1, table1)
 
   // render opponent board
   const board2 = document.getElementById("opponent-board")
@@ -28,7 +35,15 @@ function updateBoards(player: GameBoard, opponent: GameBoard) {
 
   colHeaders(table2, opponent.board[0].length)
   createRows(table2, opponent)
-  editBoard(board2, table2)
+  
+  // append
+  if(board1 && board2) {
+    board1.innerHTML = ""
+    board2.innerHTML = ""
+    board1.appendChild(table1)
+    board2.appendChild(table2)
+  }
+
 }
 
 function colHeaders(table: HTMLTableElement, count: number) {
@@ -44,15 +59,18 @@ function colHeaders(table: HTMLTableElement, count: number) {
 }
 
 function createRows(table: HTMLTableElement, gameBoard: GameBoard) {
-  for (let index = 0; index < gameBoard.board.length; index++) {
-    const row = gameBoard.board[index]
+  for (let rowIndex = 0; rowIndex < gameBoard.board.length; rowIndex++) {
+    const row = gameBoard.board[rowIndex]
     const tableRow = document.createElement("tr")
     const rowHeader = document.createElement("th")
-    rowHeader.innerText = String(index + 1)
+    rowHeader.innerText = String(rowIndex + 1)
     tableRow.appendChild(rowHeader)
-
-    for (const cell of row) {
+    
+    for (let colIndex = 0; colIndex < row.length; colIndex++) {
+      const cell = row[colIndex]
       const tableCell = document.createElement("td")
+      tableCell.dataset.row = String(rowIndex)
+      tableCell.dataset.col = String(colIndex)
       tableCell.classList.add("board-cell")
       let hit: boolean
       
@@ -64,22 +82,17 @@ function createRows(table: HTMLTableElement, gameBoard: GameBoard) {
         hit = cell.wasHit
       }
 
-      hit = true
-
       if(hit) {
         const dot = document.createElement("div")
         dot.classList.add("hit-dot")
         tableCell.appendChild(dot)
       }
 
-      tableRow.appendChild(tableCell) 
+      tableRow.appendChild(tableCell)   
     }
+
     table.appendChild(tableRow)
   }
-}
-
-function editBoard(board: HTMLElement | null, table: HTMLElement) {
-  if(board && !board.hasChildNodes()) board.appendChild(table)
 }
 
 function announce(message: string) {
