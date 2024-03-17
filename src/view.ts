@@ -10,32 +10,64 @@ async function getUserCoordinates(): Promise<number[]> {
   return []
 }
 
-function updateBoards(human: GameBoard, computer: GameBoard) {
-  let board = document.getElementById("player-board")
-  let table = document.querySelector<HTMLTableElement>("player-table") || document.createElement("table")
-  table.id = "player-table"
-  table.innerHTML = ""
+function updateBoards(player: GameBoard, opponent: GameBoard) {
+  // render player's board
+  const board1 = document.getElementById("player-board")
+  const table1 = document.querySelector<HTMLTableElement>("player-table") || document.createElement("table")
+  table1.id = "player-table"
 
-  for (const row of human.board) {
+  colHeaders(table1, player.board[0].length)
+  createRows(table1, player)
+  editBoard(board1, table1)
+
+  // render opponent board
+  const board2 = document.getElementById("opponent-board")
+  const table2 = document.querySelector<HTMLTableElement>("opponent-table") || document.createElement("table")
+  table2.id = "opponent-table"
+
+  colHeaders(table2, opponent.board[0].length)
+  createRows(table2, opponent)
+  editBoard(board2, table2)
+}
+
+function colHeaders(table: HTMLTableElement, count: number) {
+  table.innerHTML = ""
+  const alphabet = ["", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+  
+  for (let index = 0; index <= count; index++) {
+    const letter = alphabet[index]
+    const tableHeader = document.createElement("th")
+    tableHeader.innerText = letter
+    table.appendChild(tableHeader)
+  }
+}
+
+function createRows(table: HTMLTableElement, gameBoard: GameBoard) {
+  for (let index = 0; index < gameBoard.board.length; index++) {
+    const row = gameBoard.board[index]
     const tableRow = document.createElement("tr")
+    const rowHeader = document.createElement("th")
+    rowHeader.innerText = String(index + 1)
+    tableRow.appendChild(rowHeader)
+
     for (const cell of row) {
       const tableCell = document.createElement("td")
       tableCell.classList.add("board-cell")
 
       if(typeof cell == "boolean") {
-        tableCell.classList.add("bg-blue-200")
+        tableCell.classList.add("sea")
       } else {
-        tableCell.classList.add("bg-blue-400")
+        tableCell.classList.add("ship")
       }
 
       tableRow.appendChild(tableCell) 
     }
     table.appendChild(tableRow)
   }
+}
 
-  if(board && !board.hasChildNodes()) {
-    board.appendChild(table)
-  }
+function editBoard(board: HTMLElement | null, table: HTMLElement) {
+  if(board && !board.hasChildNodes()) board.appendChild(table)
 }
 
 function announce(message: string) {

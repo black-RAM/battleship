@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Battleship</title>
   </head>
-  <body>
-    <main class="grid grid-cols-2 min-h-dvh gap-6 p-6">
+  <body class="grid items-center min-h-dvh">
+    <main class="flex justify-center gap-6">
       <article>
         <header class="bg-red-500 board-title">
           <h2>Your Fleet</h2>
@@ -15,11 +15,13 @@
         <section class="yard"></section>
       </article>
 
+      <div class="border border-gray-200"></div>
+
       <article>
         <header class="bg-slate-500 board-title">
           <h2>Opponent</h2>
         </header>
-        <section id="opponet-board"></section>
+        <section id="opponent-board"></section>
         <section class="yard"></section>
       </article>
     </main>

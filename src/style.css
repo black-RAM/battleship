@@ -3,9 +3,17 @@
 @import 'tailwindcss/utilities';
 
 .board-title{
-  @apply text-white text-center text-2xl py-2 rounded;
+  @apply text-white text-center text-2xl py-2 rounded
 }
 
 .board-cell{
   @apply size-12 border-2 border-solid border-white rounded-lg
+}
+
+.board-cell.sea {
+  @apply bg-blue-100
+}
+
+.board-cell.ship{
+  @apply bg-slate-400
 }
