@@ -7,7 +7,8 @@ async function getInitialParameters() {
 }
 
 async function getUserCoordinates(): Promise<number[]> {
-  return []
+  await new Promise(resolve => setTimeout(resolve, 1000)) // wait a second
+  return Array.from({length: 2}, () => Math.floor(Math.random() * 10))
 }
 
 function updateBoards(player: GameBoard, opponent: GameBoard) {
@@ -53,11 +54,22 @@ function createRows(table: HTMLTableElement, gameBoard: GameBoard) {
     for (const cell of row) {
       const tableCell = document.createElement("td")
       tableCell.classList.add("board-cell")
-
+      let hit: boolean
+      
       if(typeof cell == "boolean") {
         tableCell.classList.add("sea")
+        hit = cell
       } else {
         tableCell.classList.add("ship")
+        hit = cell.wasHit
+      }
+
+      hit = true
+
+      if(hit) {
+        const dot = document.createElement("div")
+        dot.classList.add("hit-dot")
+        tableCell.appendChild(dot)
       }
 
       tableRow.appendChild(tableCell) 
