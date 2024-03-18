@@ -1,9 +1,28 @@
+import { InitialParameters } from "./control"
 import { GameBoard } from "./model"
 
 async function getInitialParameters() {
-  const name = "Bob"
-  const wantsToStart = true
-  return { userName: name, humanStarts: wantsToStart }
+  const formContainer = document.getElementById("log-in")
+  const form = document.querySelector<HTMLFormElement>("#log-in form")
+
+  if(!(formContainer && form)) throw new Error("form elements not found!")
+  
+  formContainer.classList.remove("hidden")
+  formContainer.classList.add("grid")
+
+  return new Promise((resolve: (value: InitialParameters) => void) => {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault()
+      formContainer.classList.remove("grid")
+      formContainer.classList.add("hidden")
+      const data = new FormData(form)
+      const info = {
+        userName:  String(data.get("name")),
+        humanStarts: data.get("starting") == "on" ? true : false
+      }
+      resolve(info)      
+    })
+  })
 }
 
 function getUserCoordinates(): Promise<number[]> {
@@ -15,7 +34,7 @@ function getUserCoordinates(): Promise<number[]> {
       const target = event.target as HTMLTableCellElement
       const coordinates = [target.dataset.row, target.dataset.col].map(coordinate => Number(coordinate))
       resolve(coordinates)
-    })
+    }, {once: true})
   })
 }
 
@@ -71,6 +90,7 @@ function createRows(table: HTMLTableElement, gameBoard: GameBoard) {
       const tableCell = document.createElement("td")
       tableCell.dataset.row = String(rowIndex)
       tableCell.dataset.col = String(colIndex)
+      tableCell.dataset.object = JSON.stringify(cell)
       tableCell.classList.add("board-cell")
       let hit: boolean
       
@@ -80,6 +100,9 @@ function createRows(table: HTMLTableElement, gameBoard: GameBoard) {
       } else {
         tableCell.classList.add("ship")
         hit = cell.wasHit
+        if(cell.ship.sunken) {
+          tableCell.classList.add("sunken")
+        }
       }
 
       if(hit) {
@@ -96,7 +119,7 @@ function createRows(table: HTMLTableElement, gameBoard: GameBoard) {
 }
 
 function announce(message: string) {
-  // console.log(message)
+  console.info(message)
 }
 
 export { getInitialParameters, getUserCoordinates, updateBoards, announce }

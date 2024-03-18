@@ -83,9 +83,9 @@ class GameBoard {
       const cell = this.board[row][col]
       
       if(cell instanceof ShipDatum) {
+        if(cell.wasHit == false) cell.ship.hit()
         cell.wasHit = true
-        cell.ship.hit()
-        return true
+        return
       }
 
       this.board[row][col] = true
@@ -117,7 +117,7 @@ class Player{
   makeMove(coordinates: number[]) {
     const [guessRow, guessCol] = coordinates
     if(!this.enemy) throw new Error("cannot makeMove without enemy")
-    return !!this.enemy.board.receiveAttack(guessRow, guessCol)
+    this.enemy.board.receiveAttack(guessRow, guessCol)
   }
 }
 

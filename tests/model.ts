@@ -147,4 +147,16 @@ describe("Computer class", () => {
     computer.automaticPlay()
     expect(makeMoveMock).toHaveBeenCalled()
   })
+
+  it("Does not repeat the same coordinates", () => {
+    const computerMoveMakerSpy = jest.spyOn(computer, "makeMove")
+    const attackedCoordinates: number[][] = []
+
+    for (let hits = 0; hits < 100; hits++) {
+      computer.automaticPlay()
+      const target = computerMoveMakerSpy.mock.calls[hits]
+      expect(attackedCoordinates).not.toContain(target)
+      attackedCoordinates.push(target.flat())
+    }
+  })
 })

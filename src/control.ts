@@ -27,14 +27,16 @@ class GameController {
 
   public async mainLoop(functions: FunctionParameters) { 
     const { viewUpdater, getter, announcer} = functions
+    viewUpdater(this.human.board, this.computer.board) // initialize view
+
     while(!(this.human.board.allSunk() || this.computer.board.allSunk())) {
-      viewUpdater(this.human.board, this.computer.board)
       if(this.humanTurn) {
         this.human.makeMove(await getter())
         this.rounds++
       } else {
         this.computer.automaticPlay()
       }
+      viewUpdater(this.human.board, this.computer.board)
       this.changeTurn()
     }
     return this.endGame(announcer)
@@ -42,7 +44,7 @@ class GameController {
 
   private endGame(announcer: (message: string) => void) {
     const winner = this.humanTurn ? this.computer : this.human
-    announcer(winner.name + "has won!")
+    announcer(winner.name + " has won!")
     return this.rounds
   }
 
@@ -52,3 +54,4 @@ class GameController {
 }
 
 export default GameController
+export {InitialParameters}
