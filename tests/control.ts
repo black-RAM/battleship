@@ -6,7 +6,7 @@ import GameController from "../src/control"
 const getInitialParameters = jest.fn(async() => ({userName: "Human", humanStarts: true}))
 const getUserCoordinates = jest.fn(async() => Array.from({length: 2}, () => Math.floor(Math.random() * 10)))
 const updateBoards = jest.fn()
-const announce = jest.fn()
+const announce = jest.fn(async() => false)
 
 const mockedFunctionParameters = {
   getter: getUserCoordinates,
@@ -27,14 +27,14 @@ describe("GameController class", () => {
     const game = new GameController(await getInitialParameters())
     const humanSpy = jest.spyOn(game.human, "makeMove")
     const computerSpy = jest.spyOn(game.computer, "makeMove")
-    const rounds = await game.mainLoop(mockedFunctionParameters)
+    const {rounds} = await game.mainLoop(mockedFunctionParameters)
     expect(humanSpy).toHaveBeenCalledTimes(rounds)
     expect(computerSpy.mock.calls.length).toBeCloseTo(rounds, -1)
   })
 
   it("updates the user interface with each play", async() => {
     const game = new GameController(await getInitialParameters())
-    const rounds = await game.mainLoop(mockedFunctionParameters)
+    const {rounds} = await game.mainLoop(mockedFunctionParameters)
     expect(updateBoards.mock.calls.length).toBeGreaterThanOrEqual(rounds)
   })
 

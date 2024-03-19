@@ -6,15 +6,12 @@ async function getInitialParameters() {
   const form = document.querySelector<HTMLFormElement>("#log-in form")
 
   if(!(formContainer && form)) throw new Error("form elements not found!")
-  
-  formContainer.classList.remove("hidden")
-  formContainer.classList.add("grid")
+  formContainer.classList.replace("hidden", "grid")
 
   return new Promise((resolve: (value: InitialParameters) => void) => {
     form.addEventListener("submit", (event) => {
       event.preventDefault()
-      formContainer.classList.remove("grid")
-      formContainer.classList.add("hidden")
+      formContainer.classList.replace("grid", "hidden")
       const data = new FormData(form)
       const info = {
         userName:  String(data.get("name")),
@@ -120,6 +117,19 @@ function createRows(table: HTMLTableElement, gameBoard: GameBoard) {
 
 function announce(message: string) {
   console.info(message)
+  const messageContainer = document.getElementById("winner-popup")
+  const header = document.querySelector<HTMLHeadingElement>("#winner-popup h2")
+  const playBtn = document.querySelector<HTMLButtonElement>("#winner-popup button")
+  if(!(messageContainer && header && playBtn)) throw new Error("#winner-popup elements not found")
+  messageContainer.classList.replace("hidden", "grid")
+  header.innerText = message
+
+  return new Promise((resolve: (value: boolean) => void) => {
+    playBtn.addEventListener("click", () => {
+      messageContainer.classList.replace("grid", "hidden")
+      resolve(true)
+    })
+  })
 }
 
 export { getInitialParameters, getUserCoordinates, updateBoards, announce }

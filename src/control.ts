@@ -8,7 +8,7 @@ interface InitialParameters{
 interface FunctionParameters {
   getter: () => Promise<number[]>
   viewUpdater: (human: GameBoard, computer: GameBoard) => void
-  announcer: (message: string) => void
+  announcer: (message: string) => Promise<boolean>
 }
 
 class GameController {
@@ -39,13 +39,17 @@ class GameController {
       viewUpdater(this.human.board, this.computer.board)
       this.changeTurn()
     }
-    return this.endGame(announcer)
+    return await this.endGame(announcer)
   }
 
-  private endGame(announcer: (message: string) => void) {
+  private async endGame(announcer: (message: string) => Promise<boolean>) {
     const winner = this.humanTurn ? this.computer : this.human
-    announcer(winner.name + " has won!")
-    return this.rounds
+    const gameData = {
+      playAgain: await announcer(winner.name + " has won!"),
+      winner: winner.name,
+      rounds: this.rounds,
+    }
+    return gameData
   }
 
   private changeTurn() {

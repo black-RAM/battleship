@@ -8,5 +8,9 @@ const viewModuleFunctions = {
   announcer: announce
 }
 
-const game = new GameController(await getInitialParameters())
-await game.mainLoop(viewModuleFunctions)
+let playRound = true
+while(playRound) {
+  const game = new GameController(await getInitialParameters())
+  const { playAgain } = await game.mainLoop(viewModuleFunctions)
+  playRound = playAgain
+}
